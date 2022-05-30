@@ -1,4 +1,6 @@
 from django.template import loader 
+from django.shortcuts import render
+from AppCoder.models import *
 from django.http import HttpResponse
 
 my_template = loader.get_template('index.html')
@@ -26,3 +28,10 @@ def estudiantes(self):
 
 def entregables(self):
     return HttpResponse('vista entregables')
+
+def miplantilla(self):
+    plantilla = loader.get_template('plantilla.html')
+
+    document = plantilla.render()
+
+    return HttpResponse(document)

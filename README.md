@@ -1,13 +1,4 @@
-# Ejercicio entregable 6
-
-Crear una web que permite ver los datos de algunos de tus familiares, guardados en una DB
-
-1. deberá tener un template, una vista y un modelo (como mínimo, pueden usar más)
-2. la clase del modelo deberá guardar mínimo un número, una cadena y una fecha (pueden ser más cosas)
-3. se deberán crear como mínimo 3 familiares
-4. los familiares se deben ver desde la web
-
-## Pasos
+# Pasos
 
 1. crear carpeta
 2. `django-admin startproject <nombredelproyecto>` - en este caso mvt6
@@ -349,25 +340,47 @@ path('showmedb/',create_course),
 
 20. Bootstrap: descargamos [este archivo](https://startbootstrap.com/previews/landing-page). Dentro de la app, creamos una carpeta llamada `static` y dentro de esta carpeta, crear una carpeta con el mismo nombre de mi aplicación; copiamos los contenidos del zip descargado en la carpeta con _el mismo nombre_ que nuestra app
 
+21. dentro de la app crear una carpeta llamada `template` - copiar el contenido del **index.html** del archivo de bootstrap en un archivo html dentro de la carpeta template: `cat ../static/AppCoder/index.html > plantilla.html`
+
 ```console
-static
-└── AppCoder
-    ├── assets
-    │   ├── favicon.ico
-    │   └── img
-    │       ├── bg-masthead.jpg
-    │       ├── bg-showcase-1.jpg
-    │       ├── bg-showcase-2.jpg
-    │       ├── bg-showcase-3.jpg
-    │       ├── testimonials-1.jpg
-    │       ├── testimonials-2.jpg
-    │       └── testimonials-3.jpg
-    ├── css
-    │   └── styles.css
-    ├── index.html
-    └── js
-        └── scripts.js
+├── static
+│   └── AppCoder
+│       ├── assets
+│       │   ├── favicon.ico
+│       │   └── img
+│       │       ├── bg-masthead.jpg
+│       │       ├── bg-showcase-1.jpg
+│       │       ├── bg-showcase-2.jpg
+│       │       ├── bg-showcase-3.jpg
+│       │       ├── testimonials-1.jpg
+│       │       ├── testimonials-2.jpg
+│       │       └── testimonials-3.jpg
+│       ├── css
+│       │   └── styles.css
+│       ├── index.html
+│       └── js
+│           └── scripts.js
+├── template
+│   └── plantilla.html
 ```
+
+22. en el views de nuestra app, tenemos que crear la función que va a enviar nuestra plantilla al navegador
+23. en el settings, agregar la ruta de la plantilla
+
+```py
+# <app>/views.py
+def miplantilla(self):
+    plantilla = loader.get_template('plantilla.html')
+
+    document = plantilla.render()
+
+    return HttpResponse(document)
+
+# CoderProject/settings.py
+'DIRS': ['/Users/josemanuelfranciscoaliaga/22/prdjango_clase/CoderProject/templates/','/Users/josemanuelfranciscoaliaga/22/prdjango_clase/CoderProject/AppCoder/template/'],
+```
+
+Falta agregar el estilo, pero ya estamos llamando a la plantilla
 
 
 

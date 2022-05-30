@@ -55,7 +55,7 @@ ROOT_URLCONF = 'CoderProject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['/Users/josemanuelfranciscoaliaga/22/prdjango_clase/CoderProject/templates/'],
+        'DIRS': ['/Users/josemanuelfranciscoaliaga/22/prdjango_clase/CoderProject/templates/','/Users/josemanuelfranciscoaliaga/22/prdjango_clase/CoderProject/AppCoder/template/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
