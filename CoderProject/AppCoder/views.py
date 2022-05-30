@@ -18,7 +18,11 @@ def inicio(self):
     return HttpResponse(document)
 
 def cursos(self):
-    return HttpResponse('vista cursos')
+    course = Curso(name='Desarrollo Web', camada='2989')
+    course.save()
+    document = f'- Curso: {course.name} - camada = {course.camada}'
+
+    return HttpResponse(document)
 
 def profesores(self):
     return HttpResponse('vista profesores')
