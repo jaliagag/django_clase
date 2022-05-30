@@ -5,12 +5,13 @@ from django.http import HttpResponse
 
 my_template = loader.get_template('index.html')
 
-def miplantilla(self):
-    plantilla = loader.get_template('inicio.html')
-
-    document = plantilla.render()
-
-    return HttpResponse(document)
+def miplantilla(request):
+    return render(request, 'AppCoder/inicio.html')
+#    plantilla = loader.get_template('inicio.html')
+#
+#    document = plantilla.render()
+#
+#    return HttpResponse(document)
 
 #def inicio(self):
 #    name = 'jose'
@@ -31,17 +32,20 @@ def miplantilla(self):
 #
 #    return HttpResponse(document)
 
-def profesores(self):
-    return HttpResponse('vista profesores')
+def profesores(request):
+    return render(request, 'AppCoder/profesores.html')
 
-def estudiantes(self):
-    return HttpResponse('vista estudiantes')
+def estudiantes(request):
+    return render(request, 'AppCoder/estudiantes.html')
+    #return HttpResponse('vista estudiantes')
 
-def entregables(self):
-    return HttpResponse('vista entregables')
+def entregables(request):
+    return render(request, 'AppCoder/entregables.html')
+    #return HttpResponse('vista entregables')
 
-def cursos(self):
-    return HttpResponse('vista cursos')
+def cursos(request):
+    return render(request, 'AppCoder/cursos.html')
+    #return HttpResponse('vista cursos')
 
 
 
