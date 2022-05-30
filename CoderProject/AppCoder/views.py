@@ -34,7 +34,7 @@ def entregables(self):
     return HttpResponse('vista entregables')
 
 def miplantilla(self):
-    plantilla = loader.get_template('plantilla.html')
+    plantilla = loader.get_template('inicio.html')
 
     document = plantilla.render()
 
