@@ -5,24 +5,31 @@ from django.http import HttpResponse
 
 my_template = loader.get_template('index.html')
 
-def inicio(self):
-    name = 'jose'
-    last_name = 'aliaga'
+def miplantilla(self):
+    plantilla = loader.get_template('inicio.html')
 
-    my_list = [2,3,4,5,6,1]
-
-    dictionary = {'nombre':name,'apellido':last_name,'lista':my_list}
-
-    document = my_template.render(dictionary) # ya no necesitamos un contexto
+    document = plantilla.render()
 
     return HttpResponse(document)
 
-def cursos(self):
-    course = Curso(name='Desarrollo Web', camada='2989')
-    course.save()
-    document = f'- Curso: {course.name} - camada = {course.camada}'
+#def inicio(self):
+#    name = 'jose'
+#    last_name = 'aliaga'
+#
+#    my_list = [2,3,4,5,6,1]
+#
+#    dictionary = {'nombre':name,'apellido':last_name,'lista':my_list}
+#
+#    document = my_template.render(dictionary) # ya no necesitamos un contexto
+#
+#    return HttpResponse(document)
 
-    return HttpResponse(document)
+#def cursos(self):
+#    course = Curso(name='Desarrollo Web', camada='2989')
+#    course.save()
+#    document = f'- Curso: {course.name} - camada = {course.camada}'
+#
+#    return HttpResponse(document)
 
 def profesores(self):
     return HttpResponse('vista profesores')
@@ -33,9 +40,8 @@ def estudiantes(self):
 def entregables(self):
     return HttpResponse('vista entregables')
 
-def miplantilla(self):
-    plantilla = loader.get_template('inicio.html')
+def cursos(self):
+    return HttpResponse('vista cursos')
 
-    document = plantilla.render()
 
-    return HttpResponse(document)
+
