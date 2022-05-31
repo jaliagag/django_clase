@@ -382,6 +382,26 @@ def miplantilla(self):
 
 Falta agregar el estilo, pero ya estamos llamando a la plantilla
 
+## Clase20
+
+en `CoderProject/AppCoder/template/inicio.html` cargamos en el head `{% load static %}`
+
+en el href de los estilos ponemos `{% static 'AppCoder/css/styles.css' %}`
+
+panel de administración
+
+en AppCoder/admin.py
+
+from .models import *
+
+# Register your models here.
+
+admin.site.register(Curso)
+admin.site.register(Estudiante)
+admin.site.register(Profesor)
+admin.site.register(Entregable)
+
+p managet.py createsuperuser
 
 
 

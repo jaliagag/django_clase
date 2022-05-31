@@ -2,4 +2,4 @@ en `CoderProject/AppCoder/template/inicio.html` cargamos en el head `{% load sta
 
 en el href de los estilos ponemos `{% static 'AppCoder/css/styles.css' %}`
 
-
+panel de administración
