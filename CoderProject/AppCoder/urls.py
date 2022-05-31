@@ -5,10 +5,9 @@ from django.urls import path
 from AppCoder import views
 
 urlpatterns = [
-    path('',views.inicio),
-    path('cursos/',views.cursos),
-    path('profesores/',views.profesores),
-    path('estudiantes/',views.estudiantes),
-    path('entregables/',views.entregables),
-    path('applantilla/',views.miplantilla),
+    path('', views.miplantilla, name='Inicio'),
+    path('cursos/', views.cursos, name='Cursos'), # los llamamos desde el html
+    path('profesores/', views.profesores, name='Profesores'), # es mejor, más controlable
+    path('estudiantes/', views.estudiantes, name='Estudiantes'),
+    path('entregables/', views.entregables), # <<<<legacy, no usar!
 ]
