@@ -384,14 +384,72 @@ Falta agregar el estilo, pero ya estamos llamando a la plantilla
 
 ## Clase20
 
-en `CoderProject/AppCoder/template/inicio.html` cargamos en el head `{% load static %}`
+### Cargar los css
 
-en el href de los estilos ponemos `{% static 'AppCoder/css/styles.css' %}`
+en la carpeta de la **app** tenemos una carpeta llamada `static/AppCoder` que tiene los archivos que descargamos de bootstrap con la página modelo. en la carpeta de la app `template` tenemos solamente el archivo html; para cargar los estilos tenemos que:
 
-panel de administración
+1. en `CoderProject/AppCoder/template/inicio.html` cargamos en el head `{% load static %}`
+2. en el href de los estilos ponemos `{% static 'AppCoder/css/styles.css' %}`
 
-en AppCoder/admin.py
+### Herencia
 
+dentro de la carpeta de la app `templates` creamos una carpeta con el nombre de la app y 
+
+1. creamos un archivo "`padre.html`" que contiene lo mismo que el `inicio.html`
+2. dentro de **padre** creamos un segmento según la vista - todo será fijo menos lo que esté entre este bloque
+
+```html
+<!-- {% block <nombre del bloque>%} -->
+{% block cambiate %}
+
+{% endblock %}
+```
+
+3. Vamos a otro archivo html, un archivo hijo y completamos con la información que deseamos:
+
+```html
+{% extends "AppCoder/padre.html" %}
+{% load static %}
+
+{% block cambiate %}
+<p>Este es un texto que solo aparecerá cuando se llame a este archivo</p>
+{% endblock %}
+```
+
+### Mejorar la referencia a los archivos
+
+en el urls.py, para cada ruta agregamos una variable `name` con un valor que después usaremos en los html para referenciarlos mejor:
+ 
+```py
+urlpatterns = [
+    path('', views.miplantilla, name='Inicio'),
+    path('cursos/', views.cursos, name='Cursos'), # los llamamos desde el html
+    path('profesores/', views.profesores, name='Profesores'), # es mejor, más controlable
+    path('estudiantes/', views.estudiantes, name='Estudiantes'),
+    path('entregables/', views.entregables), # <<<<legacy, no usar!
+]
+```
+
+```html
+<div class="container">
+    <a class="navbar-brand" href="{% url 'Inicio' %}">Inicio</a>
+    <a class="btn" href="{% url 'Profesores' %}">Profesores</a>
+    <a class="btn" href="{% url 'Cursos' %}">Cursos</a>
+    <a class="btn" href="{% url 'Estudiantes' %}">Estudiantes</a>
+    <a class="btn" href="/AppCoder/entregables/">Entregables</a> <!-- <-- forma vieja, legacy, mala -->
+    <a class="btn btn-primary" href="#signup">Iniciar</a>
+</div>
+```
+
+### panel de administración
+
+1. importar los modelos que queremos administrar y registrarlos en el archivo `admin.py` de la app:
+2. correr `python manage.py createsuperuser` - url /admin
+3. para que se vean los valores de la db en el panel de admin, agregamos el método `__str__` de las clases
+
+```py
+# AppCoder/admin.py
+from django.contrib import admin
 from .models import *
 
 # Register your models here.
@@ -401,7 +459,37 @@ admin.site.register(Estudiante)
 admin.site.register(Profesor)
 admin.site.register(Entregable)
 
-p managet.py createsuperuser
+# AppCoder/models.py
+class Curso(models.Model):
+    name = models.CharField(max_length=40)
+    camada = models.IntegerField()
+
+    def __str__(self) -> str:
+        return self.name+' '+str(self.camada)
+
+class Estudiante(models.Model):
+    name = models.CharField(max_length=40)
+    last_name = models.CharField(max_length=40)
+    email = models.EmailField()
+    def __str__(self) -> str:
+        return self.name+' '+str(self.last_name)+' '+str(self.email)
+
+class Profesor(models.Model):
+    name = models.CharField(max_length=40)
+    last_name = models.CharField(max_length=40)
+    email = models.EmailField()
+    profession = models.CharField(max_length=40)
+    def __str__(self) -> str:
+        return self.name+' '+str(self.last_name)+' '+str(self.email)+' '+str(self.profession)
+
+class Entregable(models.Model):
+    name = models.CharField(max_length=40)
+    submission_date = models.DateField()
+    submitted = models.BooleanField()
+    def __str__(self) -> str:
+        return self.name+' '+str(self.submission_date)+' '+str(self.submitted)
+```
+
 
 
 
