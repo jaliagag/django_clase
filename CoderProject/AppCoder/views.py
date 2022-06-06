@@ -47,5 +47,13 @@ def cursos(request):
     return render(request, 'AppCoder/cursos.html')
     #return HttpResponse('vista cursos')
 
+def formulario(request):
+    if request.method == 'POST':
+        print(request.POST)
+        curso = Curso(name = request.POST['curso'],camada = request.POST['camada'])
+        curso.save()
+        return render(request,"AppCoder/inicio.html")
+    
+    return render(request, 'AppCoder/formulario.html')
 
 
