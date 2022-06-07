@@ -8,12 +8,26 @@
 
 {% block contenidoQueCambia %}
 
+{% if miFormulario.errors %}
+
+<p style='color: red;'> Están mal los datos, revisar</p>
+
+{% endif %}
+
 <form action="" method="POST">{% csrf_token %}
 
-     <p>Curso: <input type="text" name="curso"></p>
-     <p>Camada: <input type="text" name="camada"></p>
+  <!-- magia de django -->
 
-     <input type="submit" value="Enviar">
+  <table>
+
+    {{ miFormulario.as_table}}
+
+  </table>
+  <input type="submit" value="Enviar">
+
+  <!--     <p>Curso: <input type="text" name="curso"></p>
+     <p>Camada: <input type="text" name="camada"></p>
+  -->
 </form>
 
 {% endblock %}
