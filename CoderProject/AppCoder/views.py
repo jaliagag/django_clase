@@ -50,9 +50,13 @@ def cursos(request):
 def formulario(request):
     if request.method == 'POST':
         print(request.POST)
-        curso = Curso(name = request.POST['curso'],camada = request.POST['camada'])
+        course = request.POST['curso']
+        camada = request.POST['camada']
+
+        curso = Curso(name = course,camada = camada)
         curso.save()
-        return render(request,"AppCoder/inicio.html")
+
+        return render(request,'AppCoder/formulario.html')
     
     return render(request, 'AppCoder/formulario.html')
 
