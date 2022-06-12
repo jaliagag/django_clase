@@ -11,4 +11,23 @@
 <p>se ha heredado todo desde la plantilla padre</p>
 
 <h3>en estudiantes casi no hay nada</h3>
+
+{% if miFormulario.errors %}
+
+<p style='color: red;'> Están mal los datos, revisar</p>
+
+{% endif %}
+
+<form action="" method="POST">{% csrf_token %}
+
+  <!-- magia de django -->
+
+  <table>
+
+    {{ miFormulario.as_table}}
+
+  </table>
+  <input type="submit" value="Enviar">
+
+</form>
 {% endblock %}

@@ -1,0 +1,25 @@
+{% extends "AppCoder/padre.html" %}
+{% load static %}
+
+{% block section_name%}
+<h3>Resultados de busqueda</h3>
+{% endblock%}
+
+{% block contenidoQueCambia %}
+
+<h1>Resultados de tu mega búsqueda, capo</h1>
+
+{{camada}}
+
+{% if cursos %}
+
+<ul>
+  {% for i in cursos %}
+  <li>{{i.name}}</li>
+  <li>{{i.camada}}</li>
+  <br>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}
