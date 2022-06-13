@@ -5,9 +5,6 @@ from AppCoder.forms import *
 
 from django.http import HttpResponse
 
-
-my_template = loader.get_template('index.html')
-
 def miplantilla(request):
     return render(request, 'AppCoder/inicio.html')
 #    plantilla = loader.get_template('inicio.html')
@@ -135,15 +132,45 @@ def formulario(request):
     
     return render(request, 'AppCoder/formulario.html',{'miFormulario':miFormulario})
 
-#        print(request.POST)
-#        course = request.POST['curso']
-#        camada = request.POST['camada']
-#
-#        curso = Curso(name = course,camada = camada)
-#        curso.save()
-#
-#        return render(request,'AppCoder/formulario.html')
-#    
-#    return render(request, 'AppCoder/formulario.html')
+def leerProfesores(request):
+    profesores =  Profesor.objects.all() # trae todos los profesores
+
+    contexto = {"profesores":profesores}
+
+    return render(request, "AppCoder/leerProfesores.html", contexto)
+
+def eliminarProfesor(request, profesor_nombre):
+
+    profesor = Profesor.objects.get(name=profesor_nombre)
+    profesor.delete()
+
+    # vuelvo al menú
+    profesores =  Profesor.objects.all() # trae todos los profesores
+
+    contexto = {"profesores":profesores}
+
+    return render(request, "AppCoder/leerProfesores.html", contexto)
 
 
+def editarProfesor(request,profesor_nombre):
+    # recibe el nombre del profesor que vamos a modificar
+    profesor = Profesor.objects.get(name=profesor_nombre)
+
+    # si es el método POST hago lo mismo que el agregar
+    if request.method == 'POST':
+        miFormulario = ProfeFormulario(request.POST)
+        if miFormulario.is_valid():
+
+            informacion = miFormulario.cleaned_data
+
+            profesor.name = informacion['name']
+            profesor.last_name = informacion['last_name']
+            profesor.email = informacion['email']
+            profesor.profession = informacion['profession']
+
+            #profe = Profesor(name=name,last_name=last_name,email=email,profession=profession)
+            profesor.save()
+            return render(request,'AppCoder/inicio.html')
+    else:
+        miFormulario = ProfeFormulario(initial={'name':profesor.name,'last_name':profesor.last_name,'email':profesor.email,'profession':profesor.profession})
+    return render(request, 'AppCoder/editarProfesor.html',{'miFormulario':miFormulario, 'profesor_nombre':profesor_nombre})

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-3r)5duov+%l@faiq-b2llg0bw$_^rxr9%jq!2@334h@k&wf8a8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -55,7 +55,7 @@ ROOT_URLCONF = 'CoderProject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['/Users/josemanuelfranciscoaliaga/22/prdjango_clase/CoderProject/templates/','/Users/josemanuelfranciscoaliaga/22/prdjango_clase/CoderProject/AppCoder/template/'],
+        'DIRS': ['/home/jaliaga/django_clase/CoderProject/templates/','/home/jaliaga/django_clase/CoderProject/AppCoder/template/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

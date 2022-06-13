@@ -1,0 +1,24 @@
+{% extends "AppCoder/padre.html" %}
+{% load static %}
+
+{% block section_name%}
+<h3>Del CRUD - READ</h3>
+{% endblock%}
+
+{% block contenidoQueCambia %}
+
+<h1>Leer profesores</h1>
+
+{% for p in profesores %} <!-- el contexto-->
+
+  <li>{{p}}</li>
+  <button>
+    <a href="{% url 'EliminarProfesor' p.name %}">Eliminar</a>
+    <a href="{% url 'EditarProfesor' p.name %}">Editar</a>
+  </button>
+
+{% endfor %}
+<br>
+<a href="{% url 'Profesores' %}"><button type="button">Agregar profesor</button></a>
+
+{% endblock %}
