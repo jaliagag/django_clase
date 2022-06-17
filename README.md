@@ -488,7 +488,297 @@ class Entregable(models.Model):
     submitted = models.BooleanField()
     def __str__(self) -> str:
         return self.name+' '+str(self.submission_date)+' '+str(self.submitted)
+# def __str__(self):
+#    return f'nombre: {self.nombre} - Apellido: {self.apellido}...'
 ```
+
+## clase22 - CRUD
+
+### READ
+
+```py
+# AppCoder/views.html
+def leerProfesores(request):
+  profesores = Profesor.objects.all() # trae todos los profesores
+  contexto = {"profesores":profesores}
+  return render(request,"AppCoder/leerProfesores.html",context)
+
+# AppCoder/urls.py
+  path('leerProfesores/', views.leerProfesores, name='LeerProfesores'),
+```
+
+```html
+# AppCoder/template/AppCoder/leerProfesores.html
+{% extends "AppCoder/padre.html" %}
+{% load static %}
+
+{% block section_name%}
+<h3>Del CRUD - READ</h3>
+{% endblock%}
+
+{% block contenidoQueCambia %}
+
+<h1>Leer profesores</h1>
+
+{% for p in profesores %} <!-- el contexto-->
+
+  <li>{{p}}</li>
+  <button>
+    <a href="{% url 'EliminarProfesor' p.name %}">Eliminar</a>
+    <a href="{% url 'EditarProfesor' p.name %}">Editar</a>
+  </button>
+
+{% endfor %}
+<br>
+<a href="{% url 'Profesores' %}"><button type="button">Agregar profesor</button></a>
+
+{% endblock %}
+```
+
+### CREATE
+
+```py
+# AppCoder/views.py
+def profesores(request):
+  if request.method == 'POST':
+    miFormulario = ProfesorFormulario(request.POST) # aquí me llega toda la información del HTML
+    if miFormulario.is_valid():
+      informacion = miFormulario.cleaned_data
+      profesor = Profesor(nombre=informacion['nombre'],apellido=informacion['apellido'],email=informacion['email'],profesion=informacion['profesion'])
+      profesor.save()
+      return render(request,'AppCoder/inicio.html') # vuelve al inicio - re molesto
+  else:
+      miFormulario = ProfesorFormulario() #formulario vacio para construir el html
+  return render(request,"Appcoder/profesores.html",{"miFormulario":miFormulario})
+
+# AppCoder/forms.py
+
+class ProfesorFomulario(forms.Form):
+  nombre = forms.CharField(max_length=30)
+  apellido = forms.CharField(max_length=30)
+  email = forms.EmailField()
+  profesion = forms.CharField(max_length=30)
+```
+
+### DELETE
+
+```py
+def eliminarProfesor(request, profesor_nombre):
+  profesor = Profesor.objects.get(nombre = profesor_nombre)
+  profesor.delete
+# listo - ahora vuelvo al menú para ver todos los profes
+  profesores = Profesor.objects.all()
+  contexto = {"profesores":profesores}
+  return render(request, "AppCoder/leerProfesores.html",contexto)
+```
+
+```html
+# AppCoder/template/AppCoder/leerProfesores.html
+<body>
+  {% for p in profesores %}
+    <li>{{p}}</li>
+    <button>
+      <a href="{% url 'EliminarProfesor' p.nombre %} ">Eliminar</a>
+    </button>
+  {% endfor %}
+  <a href="profesores">Agregar otro profesor</a>
+</body>
+```
+
+### UPDATE
+
+```py
+# AppCoder/views.py
+def editarProfesor(request, profesor_nombre):
+# recibe el nombre del profesor que vamos a modificar
+  profesor = Profesor.objects.get(nombre=profesor_nombre)
+# si es método POST hago lo mismo que el agregar
+  if request.method == 'POST':
+    miFormulario = ProfesorFormulario(request.POST)
+    if miFormulario.is_valid():
+      informacion = miFormulario.cleaned_data
+      profesor.nombre = informacion['nombre']
+      profesor.apellido = informacion['apellido']
+      profesor.email = informacion['email']
+      profesor.profesion = informacion['profesion']
+
+      profesor.save()
+
+      return render(request,'AppCoder/inicio.html')
+  else:
+    miFormulario= ProfesorFormulario(initial={'nombre':profesor.nombre,'apellido':profesor.apellido,'email':profesor.email,'profesion':profesor.profesion})
+
+  return render(request,'AppCoder/editarProfesor.html',{'miFormulario':miFormulario,'profesor_nombre':profesor_nombre})
+```
+
+```py
+# AppCoder/urls.py
+  path('editarProfesores/', views.editarProfesores, name='EditarProfesores'),
+```
+
+```html
+# AppCoder/template/AppCoder/EditarProfesores.html
+<body>
+  {% for p in profesores %}
+    <li>{{p}}</li>
+    <button>
+      <a href="{% url 'EliminarProfesor' p.nombre %} ">Eliminar</a>
+      <a href="{% url 'EditarProfesor' p.nombre %} ">Editar</a>
+    </button>
+  {% endfor %}
+  <a href="profesores">Agregar otro profesor</a>
+</body>
+```
+
+### Clases basadas en vistas
+
+hacer el crud más sencillo
+
+```py
+# AppCoder/views.py
+from django.views.generic import ListView
+
+from django.views.generic.detail import DetailView
+
+form django.views.generic.edit import CreateView
+from django.urls import reverse_lazy
+
+from django.views.generic.edit import UpdateView
+
+from django.views.generic.edit import DeleteView
+
+################################################
+
+class CursoList(ListView):
+  model = Curso
+  template_name="AppCoder/cursos_list.html"
+
+class CursoDetalle(DetailView):
+  model = Curso
+  template_name="AppCoder/curso_detalle.html"
+
+class CursoCreacion(CreateView):
+  model = Curso
+  success_url = "/AppCoder/curso/list"
+  fields = ['nombre','camada']
+
+class CursoUpdate(UpdateView):
+  model = Curso
+  success_url = "/AppCoder/curso/list"
+  fields = ['nombre','camada']
+
+class CursoDelete(DeleteView):
+  model = Curso
+  success_url = "/AppCoder/curso/list"
+```
+
+```py
+# AppCoder/urls.py
+    path('curso/list',views.CursoList.as_view(),name='List'),
+    path(r'^(?P<pk>\d+)$', views.CursoDetalle.as_view(),name='Detail'),
+    path(r'^nuevo$', views.CursoCreacion.as_view(),name='New'),
+    path(r'^editar/(?P<pk>\d+)$', views.CursoUpdate.as_view(),name='Edit'),
+    path(r'^borrar/(?P<pk>\d+)$', views.CursoDelete.as_view(),name='Delete'),
+```
+
+- templates
+  - AppCoder
+    - curso_confirm_delete.html
+    - curso_detalle.html
+    - curso_form.html
+    - cursos_list.html
+
+```html
+<!--curso_confirm_delete.html-->
+
+{% extends "AppCoder/padre.html" %}
+{% load static %}
+
+{% block section_name%}
+<h3>Confirm Delete</h3>
+{% endblock%}
+
+{% block contenidoQueCambia %}
+
+<form method='post'>{% csrf_toekn %}
+seguro eliminar "{{ object }}"?
+<input type="submit" value="Submit" />
+
+</form>
+
+{% endblock %}
+
+<!--curso_detalle.html-->
+
+{% extends "AppCoder/padre.html" %}
+{% load static %}
+
+{% block section_name%}
+<h3>Detalle</h3>
+{% endblock%}
+
+{% block contenidoQueCambia %}
+
+<p>Nombre del Curso: <i>{{ curso.nombre }} </i></p>
+<p>Camada: <i>{{ curso.camada }}</i></p>
+<p>
+  <a href="{% url 'List' %}">Regresar</a>
+</p>
+
+{% endblock %}
+
+<!--curso_form.html-->
+
+{% extends "AppCoder/padre.html" %}
+{% load static %}
+
+{% block section_name%}
+<h3>Formulario</h3>
+{% endblock%}
+
+{% block contenidoQueCambia %}
+
+<form method='post'> {% csrf_token %}
+  {{ form.as_p }}
+  <input type='submit' value='enviar' />
+</form>
+
+{% endblock %}
+
+
+<!--curso_list.html-->
+
+{% extends "AppCoder/padre.html" %}
+{% load static %}
+
+{% block section_name%}
+<h3>Lista</h3>
+{% endblock%}
+
+{% block contenidoQueCambia %}
+
+<ul>
+  {% for curso in object_list %}
+  <li>
+    <p>NOMBRE: {{ curso.nombre }}</p>
+    <p>
+      <a href="{% url 'Detail' curso.id %}">Ver</a>
+      <a href="{% url 'Edit' curso.id %}">Editar</a>
+      <a href="{% url 'Delete' curso.id %}">Borrar</a>
+    </p>
+  </li>
+  {% endfor%}
+</ul>
+
+{% endblock %}
+```
+
+
+
+
+
+
+
 
 
 
