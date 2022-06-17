@@ -2,6 +2,13 @@ from django.template import loader
 from django.shortcuts import render
 from AppCoder.models import *
 from AppCoder.forms import *
+# LISTVIEW
+from django.views.generic import ListView
+from django.views.generic.detail import DetailView 
+from django.views.generic.edit import CreateView
+from django.views.generic.edit import UpdateView
+from django.views.generic.edit import DeleteView
+from django.urls import reverse_lazy
 
 from django.http import HttpResponse
 
@@ -174,3 +181,63 @@ def editarProfesor(request,profesor_nombre):
     else:
         miFormulario = ProfeFormulario(initial={'name':profesor.name,'last_name':profesor.last_name,'email':profesor.email,'profession':profesor.profession})
     return render(request, 'AppCoder/editarProfesor.html',{'miFormulario':miFormulario, 'profesor_nombre':profesor_nombre})
+
+# LISTVIEW
+
+class CursoList(ListView):
+    model = Curso
+    template_name = "AppCoder/cursos_list.html"
+
+class CursoDetalle(DetailView):
+    model = Curso
+    template_name = "AppCoder/curso_detalle.html"
+
+class CursoCreacion(CreateView):
+    model = Curso
+    success_url = "/AppCoder/curso/list"
+    fields = ['name','camada']
+
+class CursoUpdate(UpdateView):
+    model = Curso
+    success_url = "/AppCoder/curso/list"
+    fields = ['name','camada']
+
+class CursoDelete(DeleteView):
+    model = Curso
+    success_url = "/AppCoder/curso/list"
+
+#### estudiantes
+
+### LIST - READ
+class EstudiantesList(ListView):
+    model = Estudiante
+    template_name = "AppCoder/estudiantes2.html"
+### DETAIL - READ A UN OBJETO
+class EstudianteDetalle(DetailView):
+    model = Estudiante
+    template_name = "AppCoder/estudianteDetalle.html"
+    
+#### CREATE - 
+
+class EstudianteCreacion(CreateView):
+    model = Estudiante
+    #success_url = "/AppCoder"
+    success_url = '/AppCoder/estudiante/list/'
+    fields = ['name','last_name','email']
+
+### UPDATE
+
+class EstudianteEdicion(UpdateView):
+    model = Estudiante
+    success_url = reverse_lazy('estudiantes2')
+    fields = ['name','last_name','email']
+### DELETE
+
+class EstudianteBorrar(DeleteView):
+    model = Estudiante
+    success_url = reverse_lazy('estudiantes2')
+
+
+
+
+
