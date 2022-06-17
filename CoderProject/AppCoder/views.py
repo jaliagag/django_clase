@@ -2,11 +2,15 @@ from django.template import loader
 from django.shortcuts import render
 from AppCoder.models import *
 from AppCoder.forms import *
+# LISTVIEW
+from django.views.generic import ListView
+from django.views.generic.detail import DetailView 
+from django.views.generic.edit import CreateView
+from django.views.generic.edit import UpdateView
+from django.views.generic.edit import DeleteView
+from django.urls import reverse_lazy
 
 from django.http import HttpResponse
-
-
-my_template = loader.get_template('index.html')
 
 def miplantilla(request):
     return render(request, 'AppCoder/inicio.html')
@@ -135,15 +139,105 @@ def formulario(request):
     
     return render(request, 'AppCoder/formulario.html',{'miFormulario':miFormulario})
 
-#        print(request.POST)
-#        course = request.POST['curso']
-#        camada = request.POST['camada']
-#
-#        curso = Curso(name = course,camada = camada)
-#        curso.save()
-#
-#        return render(request,'AppCoder/formulario.html')
-#    
-#    return render(request, 'AppCoder/formulario.html')
+def leerProfesores(request):
+    profesores =  Profesor.objects.all() # trae todos los profesores
+
+    contexto = {"profesores":profesores}
+
+    return render(request, "AppCoder/leerProfesores.html", contexto)
+
+def eliminarProfesor(request, profesor_nombre):
+
+    profesor = Profesor.objects.get(name=profesor_nombre)
+    profesor.delete()
+
+    # vuelvo al menú
+    profesores =  Profesor.objects.all() # trae todos los profesores
+
+    contexto = {"profesores":profesores}
+
+    return render(request, "AppCoder/leerProfesores.html", contexto)
+
+
+def editarProfesor(request,profesor_nombre):
+    # recibe el nombre del profesor que vamos a modificar
+    profesor = Profesor.objects.get(name=profesor_nombre)
+
+    # si es el método POST hago lo mismo que el agregar
+    if request.method == 'POST':
+        miFormulario = ProfeFormulario(request.POST)
+        if miFormulario.is_valid():
+
+            informacion = miFormulario.cleaned_data
+
+            profesor.name = informacion['name']
+            profesor.last_name = informacion['last_name']
+            profesor.email = informacion['email']
+            profesor.profession = informacion['profession']
+
+            #profe = Profesor(name=name,last_name=last_name,email=email,profession=profession)
+            profesor.save()
+            return render(request,'AppCoder/inicio.html')
+    else:
+        miFormulario = ProfeFormulario(initial={'name':profesor.name,'last_name':profesor.last_name,'email':profesor.email,'profession':profesor.profession})
+    return render(request, 'AppCoder/editarProfesor.html',{'miFormulario':miFormulario, 'profesor_nombre':profesor_nombre})
+
+# LISTVIEW
+
+class CursoList(ListView):
+    model = Curso
+    template_name = "AppCoder/cursos_list.html"
+
+class CursoDetalle(DetailView):
+    model = Curso
+    template_name = "AppCoder/curso_detalle.html"
+
+class CursoCreacion(CreateView):
+    model = Curso
+    success_url = "/AppCoder/curso/list"
+    fields = ['name','camada']
+
+class CursoUpdate(UpdateView):
+    model = Curso
+    success_url = "/AppCoder/curso/list"
+    fields = ['name','camada']
+
+class CursoDelete(DeleteView):
+    model = Curso
+    success_url = "/AppCoder/curso/list"
+
+#### estudiantes
+
+### LIST - READ
+class EstudiantesList(ListView):
+    model = Estudiante
+    template_name = "AppCoder/estudiantes2.html"
+### DETAIL - READ A UN OBJETO
+class EstudianteDetalle(DetailView):
+    model = Estudiante
+    template_name = "AppCoder/estudianteDetalle.html"
+    
+#### CREATE - 
+
+class EstudianteCreacion(CreateView):
+    model = Estudiante
+    #success_url = "/AppCoder"
+    success_url = '/AppCoder/estudiante/list/'
+    fields = ['name','last_name','email']
+
+### UPDATE
+
+class EstudianteEdicion(UpdateView):
+    model = Estudiante
+    success_url = reverse_lazy('estudiantes2')
+    fields = ['name','last_name','email']
+### DELETE
+
+class EstudianteBorrar(DeleteView):
+    model = Estudiante
+    success_url = reverse_lazy('estudiantes2')
+
+
+
 
 
