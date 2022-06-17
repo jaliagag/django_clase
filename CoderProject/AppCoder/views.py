@@ -146,4 +146,19 @@ def formulario(request):
 #    
 #    return render(request, 'AppCoder/formulario.html')
 
+def busquedaCamada(request):
+    return render(request, 'AppCoder/busquedaCamada.html')
 
+def buscar(request):
+    if request.GET['camada']:
+        #respuesta = f"Estoy buscando la camada número: {request.GET['camada'] }"
+        camada = request.GET['camada']
+        cursos = Curso.objects.filter(camada__icontains=camada)
+        print(cursos)
+
+        return render(request, 'AppCoder/resultadosBusqueda.html', {'cursos':cursos,'camada':camada})
+    else:
+        respuesta = 'no enviaste datos'
+
+    # no olvidar from django.http import HttpResponse
+    return HttpResponse(respuesta)

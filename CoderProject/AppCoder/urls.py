@@ -11,5 +11,7 @@ urlpatterns = [
     path('profesores/', views.profesores, name='Profesores'), # es mejor, más controlable
     path('estudiantes/', views.estudiantes, name='Estudiantes'),
     path('formulario/', views.formulario, name='Formulario'),
+    path('busquedaCamada', views.busquedaCamada, name='BusquedaCamada'),
+    path('buscar/', views.buscar, name='buscar'),
     path('entregables/', views.entregables), # <<<<legacy, no usar!
 ]
